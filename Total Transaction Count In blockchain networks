@@ -1,0 +1,65 @@
+select tns, chain from (
+select
+  count(distinct hash) as tns, 'Ethereum' as chain, 1 as Priority
+from
+  ethereum.transactions
+where
+  (
+    "from" = {{wallet address}}
+    or to = {{wallet address}}
+  )
+  and success = true
+union
+select
+  count(distinct hash) as tns,
+  'Arbitrum' as chain,
+  2 as priority
+from
+  arbitrum.transactions
+where
+  (
+    "from" = {{wallet address}}
+    or to = {{wallet address}}
+  )
+  and success = true
+union all
+select
+  count(distinct hash) as tns,
+   'Biannce' as chain,
+  3 as priority
+from
+  bnb.transactions
+where
+  (
+    "from" = {{wallet address}}
+    or to = {{wallet address}}
+  )
+  and success = true
+union all
+select
+  count(distinct hash) as tns,
+   'Avalanche' as chain,
+  4 as priority
+from
+  avalanche_c.transactions
+where
+  (
+    "from" = {{wallet address}}
+    or to = {{wallet address}}
+  )
+  and success = true
+union all
+select
+  count(distinct hash) as tns,
+   'Optimism' as chain,
+  5 as priority
+from
+  optimism.transactions
+where
+  (
+    "from" = {{wallet address}}
+    or to = {{wallet address}}
+  )
+  and success = true
+  )
+order by priority asc;
